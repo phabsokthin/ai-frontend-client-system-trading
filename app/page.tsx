@@ -143,10 +143,10 @@ export default function HomePage() {
         </div>
 
         {/* Quick Tabs Pill */}
-        <div className="inline-flex items-center p-1 rounded-xl bg-slate-200/70 dark:bg-slate-900/90 border border-slate-300/60 dark:border-slate-800 text-xs font-semibold self-start md:self-auto">
+        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-slate-200/70 dark:bg-slate-900/90 border border-slate-300/60 dark:border-slate-800 text-xs font-semibold w-full sm:w-auto">
           <button
             onClick={() => setActiveTab("all")}
-            className={`px-3.5 py-1.5 rounded-lg transition-all ${
+            className={`flex-1 sm:flex-initial text-center px-3 sm:px-3.5 py-1.5 rounded-lg transition-all ${
               activeTab === "all"
                 ? "filter-pill-active font-bold shadow-sm"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
@@ -156,7 +156,7 @@ export default function HomePage() {
           </button>
           <button
             onClick={() => setActiveTab("signals")}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all ${
+            className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-lg transition-all whitespace-nowrap ${
               activeTab === "signals"
                 ? "filter-pill-active font-bold shadow-sm"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
@@ -166,7 +166,7 @@ export default function HomePage() {
           </button>
           <button
             onClick={() => setActiveTab("analysis")}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all ${
+            className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-lg transition-all whitespace-nowrap ${
               activeTab === "analysis"
                 ? "filter-pill-active font-bold shadow-sm"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
@@ -176,7 +176,7 @@ export default function HomePage() {
           </button>
           <button
             onClick={() => setActiveTab("trades")}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all ${
+            className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-lg transition-all whitespace-nowrap ${
               activeTab === "trades"
                 ? "filter-pill-active font-bold shadow-sm"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"

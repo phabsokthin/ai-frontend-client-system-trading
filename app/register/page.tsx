@@ -299,7 +299,7 @@ export default function RegisterPage() {
                                     autoComplete="name"
                                     value={fullName}
                                     onChange={(e) => setFullName(e.target.value)}
-                                    placeholder="e.g. Alex Henderson"
+                                    placeholder="e.g. full name"
                                     className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm font-medium transition-all outline-none border focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 text-slate-900 dark:text-white"
                                     style={{
                                         backgroundColor: "var(--bg-surface)",
