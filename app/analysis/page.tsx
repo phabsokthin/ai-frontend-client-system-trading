@@ -246,7 +246,7 @@ export default function AnalysisPage() {
                 <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-950/60">
                   <span className="text-slate-400 block text-[10px] uppercase font-semibold">Gold Spot</span>
                   <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">
-                    {latest.price ? `$${latest.price.toFixed(2)}` : "—"}
+                    {(latest.current_price ?? latest.price) ? `$${Number(latest.current_price ?? latest.price).toFixed(2)}` : "—"}
                   </span>
                 </div>
                 <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-950/60">
@@ -362,7 +362,7 @@ export default function AnalysisPage() {
 
                       {/* Gold Price */}
                       <td className="py-3.5 px-4 font-bold text-slate-900 dark:text-slate-100 font-mono">
-                        {item.price ? `$${Number(item.price).toFixed(2)}` : "—"}
+                        {(item.current_price ?? item.price) ? `$${Number(item.current_price ?? item.price).toFixed(2)}` : "—"}
                       </td>
 
                       {/* Macro Trend */}
@@ -539,7 +539,9 @@ export default function AnalysisPage() {
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800/60">
                   <span className="text-slate-400 block text-[10px] uppercase font-bold">Spot Price</span>
                   <span className="font-extrabold text-sm text-blue-500 font-mono">
-                    {selectedAnalysis.price ? `$${Number(selectedAnalysis.price).toFixed(2)}` : "—"}
+                    {(selectedAnalysis.current_price ?? selectedAnalysis.price)
+                      ? `$${Number(selectedAnalysis.current_price ?? selectedAnalysis.price).toFixed(2)}`
+                      : "—"}
                   </span>
                 </div>
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800/60">

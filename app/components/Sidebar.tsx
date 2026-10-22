@@ -18,8 +18,10 @@ import {
   User,
   Settings,
   ChartBar,
+  LogOut,
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import useAuth from "../composable/useAuth";
 import GoogleTranslate from "./GoogleTranslate";
 
 interface NavItem {
@@ -57,7 +59,7 @@ const NAV_ITEMS: NavItem[] = [
     icon: History,
   },
   {
-    name: "Setting",
+    name: "Settings",
     mobileName: "Settings",
     href: "/settings",
     icon: Settings,
@@ -67,12 +69,18 @@ const NAV_ITEMS: NavItem[] = [
 export default function Sidebar() {
   const pathname = usePathname();
   const { theme, toggleTheme, settings } = useTheme();
+  const { user, logout } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
 
   const isActive = (itemHref: string) => {
     if (itemHref === "/") return pathname === "/";
     return pathname.startsWith(itemHref);
   };
+
+  // Hide sidebar and mobile bars on login and register pages
+  if (pathname?.startsWith("/login") || pathname?.startsWith("/register")) {
+    return null;
+  }
 
   return (
     <>
@@ -84,19 +92,19 @@ export default function Sidebar() {
           backgroundColor: "var(--sidebar-bg, #070b14)",
           borderColor: "var(--sidebar-border, #1e293b)",
         }}
-        className="md:hidden w-full shrink-0 flex items-center justify-between px-4 py-3 backdrop-blur-xl border-b sticky top-0 z-40 transition-colors"
+        className="md:hidden w-full max-w-full shrink-0 flex items-center justify-between px-3 sm:px-4 py-3 backdrop-blur-xl border-b sticky top-0 z-40 transition-colors box-border"
       >
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-linear-to-tr from-amber-500 via-amber-400 to-yellow-300 flex items-center justify-center text-slate-950 font-bold shadow-md shadow-amber-500/20">
+        <Link href="/" className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-xl bg-linear-to-tr from-amber-500 via-amber-400 to-yellow-300 flex items-center justify-center text-slate-950 font-bold shadow-md shadow-amber-500/20 shrink-0">
             <User size={18} className="text-slate-950 fill-current" />
           </div>
-          <div>
-            <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white notranslate">GoldPilot</span>
-            <span className="block text-[9px] font-bold text-amber-500 uppercase tracking-widest leading-none notranslate">AI Client</span>
+          <div className="min-w-0">
+            <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white notranslate truncate block">GoldPilot</span>
+            <span className="block text-[9px] font-bold text-amber-500 uppercase tracking-widest leading-none notranslate truncate">AI Client</span>
           </div>
         </Link>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Google Translate Switcher */}
           <GoogleTranslate variant="topbar" />
 
@@ -110,7 +118,7 @@ export default function Sidebar() {
           <button
             onClick={toggleTheme}
             aria-label="Toggle Theme"
-            className="p-1.5 sm:p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors border border-slate-200/60 dark:border-slate-800/60"
+            className="p-1.5 sm:p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors border border-slate-200/60 dark:border-slate-800/60 cursor-pointer shrink-0"
             title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
           >
             {theme === "dark" ? (
@@ -119,6 +127,27 @@ export default function Sidebar() {
               <Moon size={17} className="text-blue-600" />
             )}
           </button>
+
+          {/* Account / Logout Link */}
+          {user ? (
+            <button
+              onClick={() => logout()}
+              aria-label="Sign Out"
+              className="p-1.5 sm:p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-rose-500 hover:bg-rose-500/10 transition-colors border border-slate-200/60 dark:border-slate-800/60 cursor-pointer shrink-0"
+              title={`Sign Out (${user.email || "Trader"})`}
+            >
+              <LogOut size={16} />
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              aria-label="Account Login"
+              className="p-1.5 sm:p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors border border-slate-200/60 dark:border-slate-800/60 cursor-pointer shrink-0"
+              title="Account Login"
+            >
+              <User size={17} />
+            </Link>
+          )}
         </div>
       </header>
 
@@ -131,9 +160,9 @@ export default function Sidebar() {
           backgroundColor: "var(--sidebar-bg, #070b14)",
           borderColor: "var(--sidebar-border, #1e293b)",
         }}
-        className="md:hidden fixed bottom-0 left-0 right-0 z-50 backdrop-blur-2xl border-t shadow-[0_-4px_20px_rgba(0,0,0,0.15)] px-2 pt-1.5 pb-safe transition-colors"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-50 backdrop-blur-2xl border-t shadow-[0_-4px_20px_rgba(0,0,0,0.15)] px-2 pt-1.5 pb-safe transition-colors max-w-full overflow-hidden"
       >
-        <div className="grid grid-cols-5 gap-1 items-center max-w-lg mx-auto">
+        <div className="grid grid-cols-5 gap-1 items-center max-w-lg mx-auto w-full">
           {NAV_ITEMS.map((item) => {
             const active = isActive(item.href);
             const Icon = item.icon;
@@ -373,27 +402,73 @@ export default function Sidebar() {
 
           {/* User / Client Card & Expand Toggle */}
           <div className="flex items-center justify-between pt-1">
-            <div className={`flex items-center gap-2.5 overflow-hidden ${collapsed ? "justify-center w-full" : ""}`}>
+            {user ? (
               <div
-                className="w-8 h-8 rounded-full text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm"
-                style={{
-                  background: "var(--sidebar-active-gradient, var(--accent-gradient))",
-                  boxShadow: "0 2px 8px var(--sidebar-active-glow, var(--accent-glow))",
-                }}
+                className={`flex items-center gap-2.5 overflow-hidden flex-1 min-w-0 ${
+                  collapsed ? "justify-center w-full" : ""
+                }`}
               >
-                <User size={17} />
-              </div>
-              {!collapsed && (
-                <div className="flex flex-col truncate">
-                  <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
-                    Client Portal
-                  </span>
-                  <span className="text-[10px] text-slate-400 dark:text-slate-400 font-medium truncate">
-                    Live
-                  </span>
+                <div
+                  className="w-8 h-8 rounded-full text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm"
+                  style={{
+                    background: "var(--sidebar-active-gradient, var(--accent-gradient))",
+                    boxShadow: "0 2px 8px var(--sidebar-active-glow, var(--accent-glow))",
+                  }}
+                  title={user.email || "Trader"}
+                >
+                  {user.displayName?.charAt(0).toUpperCase() ||
+                    user.email?.charAt(0).toUpperCase() || <User size={16} />}
                 </div>
-              )}
-            </div>
+                {!collapsed && (
+                  <div className="flex flex-col truncate flex-1 min-w-0">
+                    <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
+                      {user.displayName || user.email?.split("@")[0] || "Trader"}
+                    </span>
+                    <span className="text-[10px] text-emerald-500 font-semibold truncate flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+                      Live Account
+                    </span>
+                  </div>
+                )}
+                {!collapsed && (
+                  <button
+                    onClick={() => logout()}
+                    title="Sign Out"
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors shrink-0"
+                  >
+                    <LogOut size={15} />
+                  </button>
+                )}
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                title="Sign In / Account"
+                className={`flex items-center gap-2.5 overflow-hidden group hover:opacity-90 transition-all ${
+                  collapsed ? "justify-center w-full" : ""
+                }`}
+              >
+                <div
+                  className="w-8 h-8 rounded-full text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform"
+                  style={{
+                    background: "var(--sidebar-active-gradient, var(--accent-gradient))",
+                    boxShadow: "0 2px 8px var(--sidebar-active-glow, var(--accent-glow))",
+                  }}
+                >
+                  <User size={17} />
+                </div>
+                {!collapsed && (
+                  <div className="flex flex-col truncate">
+                    <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-amber-500 transition-colors truncate">
+                      Client Portal
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-medium truncate">
+                      Sign In / Account
+                    </span>
+                  </div>
+                )}
+              </Link>
+            )}
 
             {/* Desktop Expand Toggle when Collapsed */}
             {collapsed && (
