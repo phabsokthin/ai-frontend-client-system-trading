@@ -279,7 +279,7 @@ export default function GoogleTranslate({
             <span
               className={`text-[10px] font-bold px-2 py-0.5 rounded-md transition-all ${
                 currentLang === "en"
-                  ? "bg-blue-600 text-white shadow-xs"
+                  ? "btn-accent text-white shadow-xs"
                   : "bg-slate-200/70 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
               }`}
             >
@@ -288,7 +288,7 @@ export default function GoogleTranslate({
             <span
               className={`text-[10px] font-bold px-2 py-0.5 rounded-md transition-all ${
                 currentLang === "km"
-                  ? "bg-blue-600 text-white shadow-xs"
+                  ? "btn-accent text-white shadow-xs"
                   : "bg-slate-200/70 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
               }`}
             >
@@ -309,7 +309,7 @@ export default function GoogleTranslate({
           onClick={() => switchLanguage("en")}
           className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
             currentLang === "en"
-              ? "bg-blue-600 text-white shadow-xs"
+              ? "btn-accent text-white shadow-xs"
               : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
           }`}
           title="Switch to English"
@@ -323,7 +323,7 @@ export default function GoogleTranslate({
           onClick={() => switchLanguage("km")}
           className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
             currentLang === "km"
-              ? "bg-blue-600 text-white shadow-xs"
+              ? "btn-accent text-white shadow-xs"
               : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
           }`}
           title="ប្តូរជាភាសាខ្មែរ (Khmer)"

@@ -15,6 +15,9 @@ import {
   ChevronRight,
   ShieldCheck,
   Flame,
+  User,
+  Settings,
+  ChartBar,
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import GoogleTranslate from "./GoogleTranslate";
@@ -23,7 +26,7 @@ interface NavItem {
   name: string;
   mobileName: string;
   href: string;
-  icon: React.ComponentType<{ className?: string; size?: number }>;
+  icon: React.ComponentType<{ className?: string; size?: number; style?: React.CSSProperties }>;
   badge?: string;
 }
 
@@ -42,10 +45,10 @@ const NAV_ITEMS: NavItem[] = [
     badge: "LIVE",
   },
   {
-    name: "Active Trades",
-    mobileName: "Trades",
-    href: "/trades",
-    icon: TrendingUp,
+    name: "AI Analysis",
+    mobileName: "Analysis",
+    href: "/analysis",
+    icon: ChartBar,
   },
   {
     name: "Trade History",
@@ -54,16 +57,16 @@ const NAV_ITEMS: NavItem[] = [
     icon: History,
   },
   {
-    name: "AI Analysis",
-    mobileName: "Analysis",
-    href: "/analysis",
-    icon: Compass,
+    name: "Setting",
+    mobileName: "Settings",
+    href: "/settings",
+    icon: Settings,
   },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, settings } = useTheme();
   const [collapsed, setCollapsed] = useState(false);
 
   const isActive = (itemHref: string) => {
@@ -76,10 +79,16 @@ export default function Sidebar() {
       {/* =====================================================================
        *  MOBILE TOP BAR (< md)
        * ===================================================================== */}
-      <header className="md:hidden w-full shrink-0 flex items-center justify-between px-4 py-3 bg-white/90 dark:bg-[#070b14]/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800/90 sticky top-0 z-40 transition-colors">
+      <header
+        style={{
+          backgroundColor: "var(--sidebar-bg, #070b14)",
+          borderColor: "var(--sidebar-border, #1e293b)",
+        }}
+        className="md:hidden w-full shrink-0 flex items-center justify-between px-4 py-3 backdrop-blur-xl border-b sticky top-0 z-40 transition-colors"
+      >
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 flex items-center justify-center text-slate-950 font-bold shadow-md shadow-amber-500/20">
-            <Flame size={18} className="text-slate-950 fill-current" />
+          <div className="w-8 h-8 rounded-xl bg-linear-to-tr from-amber-500 via-amber-400 to-yellow-300 flex items-center justify-center text-slate-950 font-bold shadow-md shadow-amber-500/20">
+            <User size={18} className="text-slate-950 fill-current" />
           </div>
           <div>
             <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white notranslate">GoldPilot</span>
@@ -118,7 +127,11 @@ export default function Sidebar() {
        * ===================================================================== */}
       <nav
         aria-label="Mobile Navigation"
-        className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-[#070b14]/95 backdrop-blur-2xl border-t border-slate-200/90 dark:border-slate-800/90 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] dark:shadow-[0_-4px_25px_rgba(0,0,0,0.6)] px-2 pt-1.5 pb-safe transition-colors"
+        style={{
+          backgroundColor: "var(--sidebar-bg, #070b14)",
+          borderColor: "var(--sidebar-border, #1e293b)",
+        }}
+        className="md:hidden fixed bottom-0 left-0 right-0 z-50 backdrop-blur-2xl border-t shadow-[0_-4px_20px_rgba(0,0,0,0.15)] px-2 pt-1.5 pb-safe transition-colors"
       >
         <div className="grid grid-cols-5 gap-1 items-center max-w-lg mx-auto">
           {NAV_ITEMS.map((item) => {
@@ -129,22 +142,33 @@ export default function Sidebar() {
               <Link
                 key={item.name}
                 href={item.href}
+                style={active ? { color: "var(--sidebar-active-bg, var(--accent-primary))" } : undefined}
                 className={`relative flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all duration-200 group ${
                   active
-                    ? "text-blue-600 dark:text-blue-400 font-bold"
+                    ? "font-bold"
                     : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
                 }`}
               >
                 {/* Active Indicator Top Pill */}
                 {active && (
-                  <span className="absolute -top-1.5 w-7 h-1 rounded-full bg-gradient-to-r from-blue-600 to-indigo-500 shadow-sm shadow-blue-500/50" />
+                  <span
+                    className="absolute -top-1.5 w-7 h-1 rounded-full mobile-active-pill"
+                    style={{
+                      background: "var(--sidebar-active-gradient, var(--accent-gradient, var(--accent-primary)))",
+                      boxShadow: "0 2px 8px var(--sidebar-active-glow, var(--accent-glow, rgba(59, 130, 246, 0.4)))",
+                    }}
+                  />
                 )}
 
                 {/* Icon wrapper */}
                 <div
                   className={`relative p-1 rounded-lg transition-transform duration-200 ${
-                    active ? "scale-110 bg-blue-500/10 dark:bg-blue-400/10" : "group-hover:scale-105"
+                    active ? "scale-110 mobile-active-icon" : "group-hover:scale-105"
                   }`}
+                  style={active ? {
+                    backgroundColor: "color-mix(in srgb, var(--sidebar-active-bg, var(--accent-primary)) 15%, transparent)",
+                    color: "var(--sidebar-active-bg, var(--accent-primary))",
+                  } : undefined}
                 >
                   <Icon size={20} className="shrink-0" />
 
@@ -172,15 +196,22 @@ export default function Sidebar() {
        * ===================================================================== */}
       <aside
         className={`hidden md:flex md:sticky top-0 left-0 h-screen z-40 shrink-0 flex-col justify-between transition-all duration-300 ease-in-out
-          bg-white/95 dark:bg-[#070b14]/95 backdrop-blur-xl border-r border-slate-200 dark:border-slate-800/80
+          backdrop-blur-xl border-r
           ${collapsed ? "w-20" : "w-64"}
         `}
+        style={{
+          backgroundColor: "var(--sidebar-bg, #070b14)",
+          borderColor: "var(--sidebar-border, #1e293b)",
+        }}
       >
         {/* Top Header / Branding */}
         <div>
-          <div className={`flex items-center gap-3 px-4 py-5 border-b border-slate-100 dark:border-slate-850 ${collapsed ? "justify-center" : "justify-between"}`}>
+          <div
+            className={`flex items-center gap-3 px-4 py-5 border-b ${collapsed ? "justify-center" : "justify-between"}`}
+            style={{ borderColor: "var(--sidebar-border, #1e293b)" }}
+          >
             <Link href="/" className="flex items-center gap-3 group overflow-hidden">
-              <div className="w-10 h-10 shrink-0 rounded-xl bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 flex items-center justify-center text-slate-950 shadow-lg shadow-amber-500/25 group-hover:scale-105 transition-transform duration-200">
+              <div className="w-10 h-10 shrink-0 rounded-xl bg-linear-to-tr from-amber-500 via-amber-400 to-yellow-300 flex items-center justify-center text-slate-950 shadow-lg shadow-amber-500/25 group-hover:scale-105 transition-transform duration-200">
                 <Flame size={22} className="text-slate-950 fill-slate-950" />
               </div>
               {!collapsed && (
@@ -225,24 +256,34 @@ export default function Sidebar() {
                     key={item.name}
                     href={item.href}
                     title={collapsed ? item.name : undefined}
+                    style={
+                      active
+                        ? {
+                            background: "var(--sidebar-active-gradient, var(--accent-gradient, var(--accent-primary)))",
+                            boxShadow: "0 4px 16px var(--sidebar-active-glow, var(--accent-glow, rgba(59, 130, 246, 0.35)))",
+                            color: "#ffffff",
+                          }
+                        : undefined
+                    }
                     className={`group relative flex items-center gap-3.5 px-3 py-2.5 rounded-xl font-medium text-sm transition-all duration-150
                       ${collapsed ? "justify-center" : ""}
-                      ${
-                        active
-                          ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/20 font-semibold"
-                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/80 dark:hover:bg-slate-900/60"
+                      ${active
+                        ? "sidebar-active-btn font-semibold text-white! shadow-md"
+                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/80 dark:hover:bg-slate-900/60"
                       }
                     `}
                   >
                     <Icon
                       size={19}
                       className={`shrink-0 transition-transform duration-200 group-hover:scale-110 ${
-                        active ? "text-white" : "text-slate-400 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white"
+                        active
+                          ? "text-white!"
+                          : "text-slate-400 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white"
                       }`}
                     />
 
                     {!collapsed && (
-                      <span className="truncate flex-1 tracking-tight">
+                      <span className="truncate flex-1 tracking-tight" style={active ? { color: "#ffffff" } : undefined}>
                         {item.name}
                       </span>
                     )}
@@ -267,7 +308,10 @@ export default function Sidebar() {
         </div>
 
         {/* Bottom Status & Controls */}
-        <div className="p-3 border-t border-slate-100 dark:border-slate-850 flex flex-col gap-2.5">
+        <div
+          className="p-3 border-t flex flex-col gap-2.5"
+          style={{ borderColor: "var(--sidebar-border, #1e293b)" }}
+        >
           {/* Live System Connectivity Pill */}
           {!collapsed ? (
             <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80">
@@ -278,7 +322,7 @@ export default function Sidebar() {
                 </span>
                 <div className="flex flex-col">
                   <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 leading-tight">
-                    Firestore Live
+                    Analysis Live
                   </span>
                   <span className="text-[10px] text-slate-400 dark:text-slate-400">
                     Auto Sync Active
@@ -330,8 +374,14 @@ export default function Sidebar() {
           {/* User / Client Card & Expand Toggle */}
           <div className="flex items-center justify-between pt-1">
             <div className={`flex items-center gap-2.5 overflow-hidden ${collapsed ? "justify-center w-full" : ""}`}>
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm">
-                CL
+              <div
+                className="w-8 h-8 rounded-full text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm"
+                style={{
+                  background: "var(--sidebar-active-gradient, var(--accent-gradient))",
+                  boxShadow: "0 2px 8px var(--sidebar-active-glow, var(--accent-glow))",
+                }}
+              >
+                <User size={17} />
               </div>
               {!collapsed && (
                 <div className="flex flex-col truncate">
@@ -339,7 +389,7 @@ export default function Sidebar() {
                     Client Portal
                   </span>
                   <span className="text-[10px] text-slate-400 dark:text-slate-400 font-medium truncate">
-                    Live Feed Only
+                    Live
                   </span>
                 </div>
               )}

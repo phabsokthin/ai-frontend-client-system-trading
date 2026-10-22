@@ -131,15 +131,15 @@ export default function HomePage() {
             </span>
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Live Firestore Sync
+              Live
             </span>
           </div>
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-            Client Trading Intelligence
+            Analysis Trading Intelligence
           </h1>
-          <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
+          {/* <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
             Real-time feed streaming algorithmic signals, deep technical analysis, and automated execution logs.
-          </p>
+          </p> */}
         </div>
 
         {/* Quick Tabs Pill */}
@@ -148,7 +148,7 @@ export default function HomePage() {
             onClick={() => setActiveTab("all")}
             className={`px-3.5 py-1.5 rounded-lg transition-all ${
               activeTab === "all"
-                ? "bg-white dark:bg-blue-600 text-slate-900 dark:text-white shadow-sm"
+                ? "filter-pill-active font-bold shadow-sm"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
@@ -158,7 +158,7 @@ export default function HomePage() {
             onClick={() => setActiveTab("signals")}
             className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all ${
               activeTab === "signals"
-                ? "bg-white dark:bg-blue-600 text-slate-900 dark:text-white shadow-sm"
+                ? "filter-pill-active font-bold shadow-sm"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
@@ -168,7 +168,7 @@ export default function HomePage() {
             onClick={() => setActiveTab("analysis")}
             className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all ${
               activeTab === "analysis"
-                ? "bg-white dark:bg-blue-600 text-slate-900 dark:text-white shadow-sm"
+                ? "filter-pill-active font-bold shadow-sm"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
@@ -178,7 +178,7 @@ export default function HomePage() {
             onClick={() => setActiveTab("trades")}
             className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all ${
               activeTab === "trades"
-                ? "bg-white dark:bg-blue-600 text-slate-900 dark:text-white shadow-sm"
+                ? "filter-pill-active font-bold shadow-sm"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
@@ -318,9 +318,9 @@ export default function HomePage() {
               </div>
               <div>
                 <h2 className="text-lg font-bold tracking-tight">AI Trading Signals</h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                {/* <p className="text-xs text-slate-500 dark:text-slate-400">
                   Live Firestore signal setups with entry, Stop Loss, and multi-tier Take Profit targets
-                </p>
+                </p> */}
               </div>
             </div>
             {signalsLoading && (
@@ -655,7 +655,7 @@ export default function HomePage() {
                         onClick={() => setSelectedTrade(t)}
                         className="hover:bg-slate-100/70 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group"
                       >
-                        <td className="py-3.5 px-4 font-mono text-slate-500 dark:text-slate-400 truncate max-w-[140px] group-hover:text-blue-500 transition-colors">
+                        <td className="py-3.5 px-4 font-mono text-slate-500 dark:text-slate-400 truncate max-w-35 group-hover:text-blue-500 transition-colors">
                           {t.ticket ? `#${t.ticket}` : t.id?.replace("trade_", "") || "—"}
                         </td>
                         <td className="py-3.5 px-4 whitespace-nowrap">
@@ -725,7 +725,7 @@ export default function HomePage() {
                             {t.status}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400 max-w-[200px] truncate" title={t.exit_reason || t.reason}>
+                        <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400 max-w-50 truncate" title={t.exit_reason || t.reason}>
                           {t.exit_reason || t.reason || "—"}
                         </td>
                         <td className="py-3.5 px-4 text-right">
@@ -735,7 +735,7 @@ export default function HomePage() {
                               e.stopPropagation();
                               setSelectedTrade(t);
                             }}
-                            className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 hover:bg-blue-600 hover:text-white dark:bg-slate-800 dark:hover:bg-blue-600 text-slate-600 dark:text-slate-300 transition-all shadow-sm"
+                            className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 hover:btn-accent hover:text-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all shadow-sm cursor-pointer"
                           >
                             Details
                           </button>

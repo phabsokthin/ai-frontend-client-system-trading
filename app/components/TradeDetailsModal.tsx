@@ -102,7 +102,7 @@ export default function TradeDetailsModal({
       >
         {/* Glow accent bar at top */}
         <div
-          className={`h-1.5 w-full bg-gradient-to-r ${
+          className={`h-1.5 w-full bg-linear-to-r ${
             isBuy
               ? "from-emerald-500 via-teal-400 to-blue-500"
               : "from-rose-500 via-amber-400 to-purple-500"
@@ -356,7 +356,7 @@ export default function TradeDetailsModal({
 
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-xl text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-blue-600 dark:hover:bg-blue-500 transition-colors shadow-sm"
+            className="px-5 py-2 rounded-xl text-xs font-bold text-white btn-accent transition-all shadow-sm cursor-pointer"
           >
             Close Details
           </button>

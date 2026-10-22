@@ -207,12 +207,12 @@ export const getCollection = <T extends DocumentData = FirestoreDocument>(
     const unsubscribe = onSnapshot(
       collectionRef,
       (snapshot) => {
-        const result = snapshot.docs.map(
-          (doc: QueryDocumentSnapshot<DocumentData>) => ({
+        const result = snapshot.docs
+          .filter((doc) => collectionName !== COLLECTIONS.ANALYSIS || doc.id !== "latest")
+          .map((doc: QueryDocumentSnapshot<DocumentData>) => ({
             id: doc.id,
             ...(doc.data() as T),
-          })
-        );
+          }));
 
         // Guarantee descending order (newest first)
         result.sort((a, b) => {
@@ -224,7 +224,27 @@ export const getCollection = <T extends DocumentData = FirestoreDocument>(
           return String(b.id || "").localeCompare(String(a.id || ""));
         });
 
-        setDocument(result);
+        if (collectionName === COLLECTIONS.ANALYSIS) {
+          const seen = new Set<string>();
+          const deduped: (T & { id: string })[] = [];
+          for (const item of result) {
+            const rawTs = (item as any).timestamp_utc || (item as any).createdAt || "";
+            let cSlot = item.id;
+            if (rawTs) {
+              const t = new Date(rawTs).getTime();
+              if (!isNaN(t) && t > 0) {
+                cSlot = `${Math.floor(t / (5 * 60 * 1000))}_${(item as any).symbol || "XAU/USD"}`;
+              }
+            }
+            if (!seen.has(cSlot)) {
+              seen.add(cSlot);
+              deduped.push(item);
+            }
+          }
+          setDocument(deduped);
+        } else {
+          setDocument(result);
+        }
         setLoading(false);
       },
       (err) => {
@@ -234,12 +254,12 @@ export const getCollection = <T extends DocumentData = FirestoreDocument>(
         onSnapshot(
           fallbackRef,
           (snapshot) => {
-            const fallbackResult = snapshot.docs.map(
-              (doc: QueryDocumentSnapshot<DocumentData>) => ({
+            const fallbackResult = snapshot.docs
+              .filter((doc) => collectionName !== COLLECTIONS.ANALYSIS || doc.id !== "latest")
+              .map((doc: QueryDocumentSnapshot<DocumentData>) => ({
                 id: doc.id,
                 ...(doc.data() as T),
-              })
-            );
+              }));
 
             // In-memory descending sort
             fallbackResult.sort((a, b) => {
@@ -251,7 +271,27 @@ export const getCollection = <T extends DocumentData = FirestoreDocument>(
               return String(b.id || "").localeCompare(String(a.id || ""));
             });
 
-            setDocument(fallbackResult);
+            if (collectionName === COLLECTIONS.ANALYSIS) {
+              const seen = new Set<string>();
+              const deduped: (T & { id: string })[] = [];
+              for (const item of fallbackResult) {
+                const rawTs = (item as any).timestamp_utc || (item as any).createdAt || "";
+                let cSlot = item.id;
+                if (rawTs) {
+                  const t = new Date(rawTs).getTime();
+                  if (!isNaN(t) && t > 0) {
+                    cSlot = `${Math.floor(t / (5 * 60 * 1000))}_${(item as any).symbol || "XAU/USD"}`;
+                  }
+                }
+                if (!seen.has(cSlot)) {
+                  seen.add(cSlot);
+                  deduped.push(item);
+                }
+              }
+              setDocument(deduped);
+            } else {
+              setDocument(fallbackResult);
+            }
             setLoading(false);
           },
           (fallbackErr) => {

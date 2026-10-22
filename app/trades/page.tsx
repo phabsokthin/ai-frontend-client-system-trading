@@ -209,7 +209,7 @@ export default function TradesPage() {
                           {t.status}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400 max-w-[200px] truncate" title={t.exit_reason || t.reason}>
+                      <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400 max-w-50 truncate" title={t.exit_reason || t.reason}>
                         {t.exit_reason || t.reason || "—"}
                       </td>
                       <td className="py-3.5 px-4 text-right">
@@ -219,7 +219,7 @@ export default function TradesPage() {
                             e.stopPropagation();
                             setSelectedTrade(t);
                           }}
-                          className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 hover:bg-blue-600 hover:text-white dark:bg-slate-800 dark:hover:bg-blue-600 text-slate-600 dark:text-slate-300 transition-all shadow-sm"
+                          className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 hover:btn-accent hover:text-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all shadow-sm cursor-pointer"
                         >
                           Details
                         </button>

@@ -183,3 +183,84 @@ body {
   height: 0 !important;
 }
 
+/* User Settings Overrides */
+.high-contrast {
+  --border-color: #475569 !important;
+  --text-primary: #ffffff !important;
+}
+
+.high-contrast.dark {
+  --border-color: #64748b !important;
+  --border-subtle: #475569 !important;
+}
+
+.compact-mode .card-padding {
+  padding: 0.75rem !important;
+}
+
+/* Dynamic Accent Theming for Buttons and Highlights Across All Pages */
+.btn-accent,
+.btn-primary,
+button.btn-primary {
+  background: var(--accent-gradient, var(--accent-primary)) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px var(--accent-glow, rgba(59, 130, 246, 0.35)) !important;
+  border-color: transparent !important;
+}
+
+.btn-accent:hover,
+.btn-primary:hover,
+button.btn-primary:hover {
+  filter: brightness(1.1);
+}
+
+.accent-text {
+  color: var(--accent-primary) !important;
+}
+
+.accent-bg {
+  background-color: var(--accent-primary) !important;
+}
+
+.accent-border {
+  border-color: var(--accent-primary) !important;
+}
+
+.accent-gradient {
+  background: var(--accent-gradient, var(--accent-primary)) !important;
+}
+
+.filter-pill-active {
+  background: var(--accent-gradient, var(--accent-primary)) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px var(--accent-glow, rgba(59, 130, 246, 0.3)) !important;
+}
+
+.pagination-active {
+  background: var(--accent-gradient, var(--accent-primary)) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px var(--accent-glow, rgba(59, 130, 246, 0.35)) !important;
+}
+
+/* Sidebar Active Button & Indicators */
+.sidebar-active-btn {
+  background: var(--sidebar-active-gradient, var(--accent-gradient, var(--accent-primary))) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px var(--sidebar-active-glow, var(--accent-glow, rgba(59, 130, 246, 0.35))) !important;
+}
+
+.mobile-active-pill {
+  background: var(--sidebar-active-gradient, var(--accent-gradient, var(--accent-primary))) !important;
+  box-shadow: 0 2px 8px var(--sidebar-active-glow, var(--accent-glow, rgba(59, 130, 246, 0.4))) !important;
+}
+
+.mobile-active-text {
+  color: var(--sidebar-active-bg, var(--accent-primary)) !important;
+}
+
+.mobile-active-icon {
+  background-color: color-mix(in srgb, var(--sidebar-active-bg, var(--accent-primary)) 15%, transparent) !important;
+  color: var(--sidebar-active-bg, var(--accent-primary)) !important;
+}
+
+
