@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "@/firebase";
 import Sidebar from "./Sidebar";
+import FloatingPnLButton from "./FloatingPnLButton";
 import { Zap, Loader2, ShieldCheck } from "lucide-react";
 
 export default function ClientLayoutWrapper({
@@ -102,6 +103,7 @@ export default function ClientLayoutWrapper({
           children
         )}
       </div>
+      {!isAuthPage && user && <FloatingPnLButton />}
     </div>
   );
 }

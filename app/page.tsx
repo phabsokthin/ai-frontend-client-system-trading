@@ -56,15 +56,62 @@ function formatTime(val: any): string {
   }
 }
 
+// Helper to check if a date/timestamp or document ID matches today (local or UTC)
+function isToday(val: any, docId?: string): boolean {
+  const now = new Date();
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const todayLocalStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+  const todayLocalCompact = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`;
+  const todayUTCStr = `${now.getUTCFullYear()}-${pad(now.getUTCMonth() + 1)}-${pad(now.getUTCDate())}`;
+  const todayUTCCompact = `${now.getUTCFullYear()}${pad(now.getUTCMonth() + 1)}${pad(now.getUTCDate())}`;
+
+  if (docId) {
+    if (
+      docId.includes(todayLocalStr) ||
+      docId.includes(todayLocalCompact) ||
+      docId.includes(todayUTCStr) ||
+      docId.includes(todayUTCCompact)
+    ) {
+      return true;
+    }
+  }
+
+  if (!val) return false;
+
+  try {
+    const d = typeof val === "object" && val?.toDate ? val.toDate() : new Date(val);
+    if (isNaN(d.getTime())) return false;
+
+    const sameLocalDate =
+      d.getFullYear() === now.getFullYear() &&
+      d.getMonth() === now.getMonth() &&
+      d.getDate() === now.getDate();
+
+    const sameUTCDate =
+      d.getUTCFullYear() === now.getUTCFullYear() &&
+      d.getUTCMonth() === now.getUTCMonth() &&
+      d.getUTCDate() === now.getUTCDate();
+
+    return sameLocalDate || sameUTCDate;
+  } catch {
+    return false;
+  }
+}
+
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<"all" | "signals" | "analysis" | "trades">("all");
   const [tradeFilter, setTradeFilter] = useState<"ALL" | "OPEN" | "CLOSED">("ALL");
+  const [signalDateFilter, setSignalDateFilter] = useState<"TODAY" | "ALL">("TODAY");
   const [selectedTrade, setSelectedTrade] = useState<TradeDocument | null>(null);
 
   // Real-time Firestore hooks
   const { data: signals, loading: signalsLoading } = useSignals();
   const { data: analysisList, loading: analysisLoading } = useAnalysis();
   const { data: trades, loading: tradesLoading } = useTrades();
+
+  // Filter signals for today
+  const todaySignals = (signals || []).filter((sig) => isToday(sig.timestamp_utc || sig.createdAt, sig.id));
+  const displayedSignals = signalDateFilter === "TODAY" ? todaySignals : (signals || []);
 
   // Get most recent items
   const latestSignal: SignalDocument | null = signals && signals.length > 0 ? signals[0] : null;
@@ -162,7 +209,7 @@ export default function HomePage() {
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
-            <Zap size={14} /> Signals ({signals?.length || 0})
+            <Zap size={14} /> Signals ({signalDateFilter === "TODAY" ? todaySignals.length : (signals?.length || 0)})
           </button>
           <button
             onClick={() => setActiveTab("analysis")}
@@ -311,26 +358,63 @@ export default function HomePage() {
       {/* SECTION 1: SIGNALS LIST */}
       {(activeTab === "all" || activeTab === "signals") && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
                 <Zap size={18} />
               </div>
               <div>
-                <h2 className="text-lg font-bold tracking-tight">AI Trading Signals</h2>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-lg font-bold tracking-tight">AI Trading Signals</h2>
+                  {signalDateFilter === "TODAY" && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-500 border border-amber-500/30">
+                      Today Only
+                    </span>
+                  )}
+                </div>
                 {/* <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Live Firestore signal setups with entry, Stop Loss, and multi-tier Take Profit targets
+                  {signalDateFilter === "TODAY"
+                    ? "Displaying today's AI confluence signals & setup analysis"
+                    : "Displaying all recorded AI trading signals"}
                 </p> */}
               </div>
             </div>
-            {signalsLoading && (
-              <span className="text-xs text-slate-400 animate-pulse">Syncing signals...</span>
-            )}
+
+            <div className="flex items-center gap-2">
+              {signalsLoading && (
+                <span className="text-xs text-slate-400 animate-pulse hidden sm:inline">Syncing signals...</span>
+              )}
+              {/* Filter Toggle: Today Only vs All */}
+              <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-200/70 dark:bg-slate-900 border border-slate-300/60 dark:border-slate-800 text-xs font-semibold">
+                <button
+                  type="button"
+                  onClick={() => setSignalDateFilter("TODAY")}
+                  className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
+                    signalDateFilter === "TODAY"
+                      ? "bg-amber-500 text-slate-950 font-bold shadow-sm"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                  }`}
+                >
+                  Today ({todaySignals.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSignalDateFilter("ALL")}
+                  className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
+                    signalDateFilter === "ALL"
+                      ? "bg-amber-500 text-slate-950 font-bold shadow-sm"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                  }`}
+                >
+                  All History ({signals?.length || 0})
+                </button>
+              </div>
+            </div>
           </div>
 
-          {signals && signals.length > 0 ? (
+          {displayedSignals && displayedSignals.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {signals.map((sig) => {
+              {displayedSignals.map((sig) => {
                 const isBuy = sig.signal === "BUY";
                 const isSell = sig.signal === "SELL";
                 const borderClass = isBuy
@@ -421,14 +505,27 @@ export default function HomePage() {
               })}
             </div>
           ) : (
-            <div className="p-8 rounded-2xl bg-white dark:bg-slate-900/40 border border-dashed border-slate-300 dark:border-slate-800 text-center space-y-2">
+            <div className="p-8 rounded-2xl bg-white dark:bg-slate-900/40 border border-dashed border-slate-300 dark:border-slate-800 text-center space-y-3">
               <Zap className="mx-auto text-slate-400 opacity-60" size={32} />
               <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">
-                No active signals yet in Firestore
+                {signalDateFilter === "TODAY"
+                  ? "No new AI trading signals generated today yet"
+                  : "No signals recorded in Firestore"}
               </p>
               <p className="text-xs text-slate-400 max-w-sm mx-auto">
-                Signals will populate automatically as the python gold trading backend computes confluences.
+                {signalDateFilter === "TODAY"
+                  ? "The AI algorithmic engine is actively scanning confluences for today. You can view previous signals from history below."
+                  : "Signals will populate automatically as the python gold trading backend computes confluences."}
               </p>
+              {signalDateFilter === "TODAY" && signals && signals.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setSignalDateFilter("ALL")}
+                  className="px-3.5 py-1.5 rounded-xl bg-amber-500/15 text-amber-500 hover:bg-amber-500/25 border border-amber-500/30 text-xs font-bold transition-all inline-block cursor-pointer"
+                >
+                  View All Previous Signals ({signals.length})
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -444,9 +541,9 @@ export default function HomePage() {
               </div>
               <div>
                 <h2 className="text-lg font-bold tracking-tight">Market Technical Analysis</h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                {/* <p className="text-xs text-slate-500 dark:text-slate-400">
                   Multi-timeframe trend alignment, support & resistance pivots, and news filter status
-                </p>
+                </p> */}
               </div>
             </div>
             {analysisLoading && (
@@ -585,9 +682,9 @@ export default function HomePage() {
               </div>
               <div>
                 <h2 className="text-lg font-bold tracking-tight">Execution Trades Log</h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                {/* <p className="text-xs text-slate-500 dark:text-slate-400">
                   Real-time MetaTrader 5 execution and backtest position outcomes
-                </p>
+                </p> */}
               </div>
             </div>
 

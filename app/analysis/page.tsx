@@ -110,9 +110,9 @@ export default function AnalysisPage() {
               <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
                 AI Technical Analysis & Market Intelligence
               </h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              {/* <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Multi-timeframe confluence, support & resistance zones, pivot levels, and historical analysis logs.
-              </p>
+              </p> */}
             </div>
           </div>
         </div>
@@ -151,13 +151,12 @@ export default function AnalysisPage() {
                 <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800/60">
                   <span className="text-slate-500 dark:text-slate-400">Higher Timeframe (1H)</span>
                   <span
-                    className={`font-black px-2 py-0.5 rounded text-[11px] uppercase ${
-                      latest.multi_timeframe?.htf_trend === "BULLISH"
+                    className={`font-black px-2 py-0.5 rounded text-[11px] uppercase ${latest.multi_timeframe?.htf_trend === "BULLISH"
                         ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
                         : latest.multi_timeframe?.htf_trend === "BEARISH"
-                        ? "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30"
-                        : "bg-slate-500/15 text-slate-400"
-                    }`}
+                          ? "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30"
+                          : "bg-slate-500/15 text-slate-400"
+                      }`}
                   >
                     {latest.multi_timeframe?.htf_trend || "BEARISH"}
                   </span>
@@ -165,13 +164,12 @@ export default function AnalysisPage() {
                 <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800/60">
                   <span className="text-slate-500 dark:text-slate-400">Entry Timeframe (5M)</span>
                   <span
-                    className={`font-black px-2 py-0.5 rounded text-[11px] uppercase ${
-                      latest.signal === "BUY" || latest.action === "BUY"
+                    className={`font-black px-2 py-0.5 rounded text-[11px] uppercase ${latest.signal === "BUY" || latest.action === "BUY"
                         ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
                         : latest.signal === "SELL" || latest.action === "SELL"
-                        ? "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30"
-                        : "bg-slate-500/15 text-slate-400 border border-slate-500/30"
-                    }`}
+                          ? "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30"
+                          : "bg-slate-500/15 text-slate-400 border border-slate-500/30"
+                      }`}
                   >
                     {latest.multi_timeframe?.entry_signal || latest.signal || "WAIT"}
                   </span>
@@ -288,11 +286,10 @@ export default function AnalysisPage() {
                     setSignalFilter(f);
                     goToPage(1);
                   }}
-                  className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
-                    signalFilter === f
+                  className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${signalFilter === f
                       ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm"
                       : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
-                  }`}
+                    }`}
                 >
                   {f}
                 </button>
@@ -368,13 +365,12 @@ export default function AnalysisPage() {
                       {/* Macro Trend */}
                       <td className="py-3.5 px-4">
                         <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                            trend === "BULLISH"
+                          className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${trend === "BULLISH"
                               ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
                               : trend === "BEARISH"
-                              ? "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30"
-                              : "bg-slate-500/15 text-slate-400 border border-slate-500/30"
-                          }`}
+                                ? "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30"
+                                : "bg-slate-500/15 text-slate-400 border border-slate-500/30"
+                            }`}
                         >
                           {trend}
                         </span>
@@ -388,8 +384,8 @@ export default function AnalysisPage() {
                               Number(item.multi_timeframe.htf_rsi) > 70
                                 ? "text-rose-400 font-bold"
                                 : Number(item.multi_timeframe.htf_rsi) < 30
-                                ? "text-emerald-400 font-bold"
-                                : "text-slate-700 dark:text-slate-300"
+                                  ? "text-emerald-400 font-bold"
+                                  : "text-slate-700 dark:text-slate-300"
                             }
                           >
                             {Number(item.multi_timeframe.htf_rsi).toFixed(1)}
@@ -402,13 +398,12 @@ export default function AnalysisPage() {
                       {/* Signal */}
                       <td className="py-3.5 px-4">
                         <span
-                          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md font-bold text-[10px] uppercase ${
-                            isBuy
+                          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md font-bold text-[10px] uppercase ${isBuy
                               ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
                               : isSell
-                              ? "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30"
-                              : "bg-slate-500/15 text-slate-400 border border-slate-500/30"
-                          }`}
+                                ? "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30"
+                                : "bg-slate-500/15 text-slate-400 border border-slate-500/30"
+                            }`}
                         >
                           {isBuy ? <ArrowUpRight size={12} /> : isSell ? <ArrowDownRight size={12} /> : null}
                           {sig}

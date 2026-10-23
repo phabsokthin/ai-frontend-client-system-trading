@@ -20,6 +20,7 @@ export const COLLECTIONS = {
   TRADES: "trades",
   SIGNALS: "signals",
   ANALYSIS: "analysis",
+  PNL_TRADING: "PNLTrading",
 } as const;
 
 export type CollectionName = (typeof COLLECTIONS)[keyof typeof COLLECTIONS] | string;
@@ -59,6 +60,12 @@ export interface TradeDocument extends DocumentData {
   timeframe?: string;
   source?: "ai_signal" | "manual_web" | "mt5_sync" | string;
   comment?: string;
+  notes?: string;
+  strategy?: string;
+  session?: string;
+  emotion?: string;
+  uid?: string;
+  userEmail?: string;
   createdAt?: any;
   updatedAt?: any;
 }
@@ -170,13 +177,22 @@ export interface AnalysisDocument extends DocumentData {
 // Helper to extract timestamp for in-memory sorting
 function getTimestampValue(item: any): number {
   if (!item) return 0;
+  // 1. Primary: actual market timestamp (timestamp_utc, entry_time, exit_time)
+  const marketTs = item.timestamp_utc || item.entry_time || item.exit_time;
+  if (marketTs) {
+    const t = new Date(marketTs).getTime();
+    if (!isNaN(t) && t > 0) return t;
+  }
+  // 2. Firestore Timestamp object
   if (item.createdAt?.toDate) return item.createdAt.toDate().getTime();
   if (item.createdAt?.seconds) return item.createdAt.seconds * 1000;
-  const str = item.createdAt || item.timestamp_utc || item.entry_time;
-  if (str) {
-    const t = new Date(str).getTime();
-    if (!isNaN(t)) return t;
+  // 3. Fallback string representation
+  if (item.createdAt) {
+    const t = new Date(item.createdAt).getTime();
+    if (!isNaN(t) && t > 0) return t;
   }
+  if (item.updatedAt?.toDate) return item.updatedAt.toDate().getTime();
+  if (item.updatedAt?.seconds) return item.updatedAt.seconds * 1000;
   return 0;
 }
 
@@ -208,7 +224,7 @@ export const getCollection = <T extends DocumentData = FirestoreDocument>(
       collectionRef,
       (snapshot) => {
         const result = snapshot.docs
-          .filter((doc) => collectionName !== COLLECTIONS.ANALYSIS || doc.id !== "latest")
+          .filter((doc) => collectionName !== COLLECTIONS.ANALYSIS || (doc.id !== "latest" && doc.id !== "analysis_2026-10-23T01_30"))
           .map((doc: QueryDocumentSnapshot<DocumentData>) => ({
             id: doc.id,
             ...(doc.data() as T),
@@ -255,7 +271,7 @@ export const getCollection = <T extends DocumentData = FirestoreDocument>(
           fallbackRef,
           (snapshot) => {
             const fallbackResult = snapshot.docs
-              .filter((doc) => collectionName !== COLLECTIONS.ANALYSIS || doc.id !== "latest")
+              .filter((doc) => collectionName !== COLLECTIONS.ANALYSIS || (doc.id !== "latest" && doc.id !== "analysis_2026-10-23T01_30"))
               .map((doc: QueryDocumentSnapshot<DocumentData>) => ({
                 id: doc.id,
                 ...(doc.data() as T),
@@ -333,6 +349,12 @@ export const useSignals = (...constraints: QueryConstraint[]) =>
 export const useAnalysis = (...constraints: QueryConstraint[]) =>
   getCollection<AnalysisDocument>(
     COLLECTIONS.ANALYSIS,
+    ...(constraints.length > 0 ? constraints : [orderBy("createdAt", "desc")])
+  );
+
+export const usePNLTrading = (...constraints: QueryConstraint[]) =>
+  getCollection<TradeDocument>(
+    COLLECTIONS.PNL_TRADING,
     ...(constraints.length > 0 ? constraints : [orderBy("createdAt", "desc")])
   );
 

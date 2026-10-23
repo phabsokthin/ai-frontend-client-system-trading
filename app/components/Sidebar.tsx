@@ -19,6 +19,10 @@ import {
   Settings,
   ChartBar,
   LogOut,
+  LogsIcon,
+  CandlestickChart,
+  Database,
+  Lock,
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import useAuth from "../composable/useAuth";
@@ -50,7 +54,7 @@ const NAV_ITEMS: NavItem[] = [
     name: "AI Analysis",
     mobileName: "Analysis",
     href: "/analysis",
-    icon: ChartBar,
+    icon: CandlestickChart,
   },
   {
     name: "Trade History",
@@ -99,7 +103,7 @@ export default function Sidebar() {
             <User size={18} className="text-slate-950 fill-current" />
           </div>
           <div className="min-w-0">
-            <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white notranslate truncate block">GoldPilot</span>
+            <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white notranslate truncate block">Signal System</span>
             <span className="block text-[9px] font-bold text-amber-500 uppercase tracking-widest leading-none notranslate truncate">AI Client</span>
           </div>
         </Link>
@@ -223,9 +227,17 @@ export default function Sidebar() {
       {/* =====================================================================
        *  DESKTOP SIDEBAR (>= md)
        * ===================================================================== */}
+      {/* Spacer to hold desktop sidebar width in layout flow so main content doesn't jump or overlap */}
+      <div
+        className={`hidden md:block shrink-0 transition-all duration-300 ease-in-out ${
+          collapsed ? "w-20" : "w-64"
+        }`}
+        aria-hidden="true"
+      />
+
       <aside
-        className={`hidden md:flex md:sticky top-0 left-0 h-screen z-40 shrink-0 flex-col justify-between transition-all duration-300 ease-in-out
-          backdrop-blur-xl border-r
+        className={`hidden md:flex fixed top-0 bottom-0 left-0 h-screen z-40 shrink-0 flex-col justify-between transition-all duration-300 ease-in-out
+          backdrop-blur-xl border-r overflow-y-auto no-scrollbar
           ${collapsed ? "w-20" : "w-64"}
         `}
         style={{
@@ -241,12 +253,12 @@ export default function Sidebar() {
           >
             <Link href="/" className="flex items-center gap-3 group overflow-hidden">
               <div className="w-10 h-10 shrink-0 rounded-xl bg-linear-to-tr from-amber-500 via-amber-400 to-yellow-300 flex items-center justify-center text-slate-950 shadow-lg shadow-amber-500/25 group-hover:scale-105 transition-transform duration-200">
-                <Flame size={22} className="text-slate-950 fill-slate-950" />
+                <User size={22} className="text-slate-950 fill-slate-950" />
               </div>
               {!collapsed && (
                 <div className="flex flex-col truncate">
                   <span className="font-extrabold text-base tracking-tight text-slate-900 dark:text-white group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors notranslate">
-                    GoldPilot
+                    Signal System
                   </span>
                   <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400/90 tracking-widest uppercase notranslate">
                     AI Client System

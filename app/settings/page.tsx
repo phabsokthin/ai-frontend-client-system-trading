@@ -137,9 +137,9 @@ export default function SettingsPage() {
               <h1 className="text-xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white truncate">
                 Workstation Settings
               </h1>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1 sm:line-clamp-none">
+              {/* <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1 sm:line-clamp-none">
                 Customize colors, background styling, typography, sound alerts, and trading view
-              </p>
+              </p> */}
             </div>
           </div>
         </div>

@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GoldPilot - AI Trading Client System",
+  title: "System Client Analysis",
   description: "Real-time AI trading signals, active positions, and performance monitoring.",
 };
 
